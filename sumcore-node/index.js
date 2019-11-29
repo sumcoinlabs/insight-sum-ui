@@ -9,7 +9,7 @@ var InsightUI = function(options) {
   if (typeof options.apiPrefix !== 'undefined') {
     this.apiPrefix = options.apiPrefix;
   } else {
-    this.apiPrefix = 'insight-lite-api';
+    this.apiPrefix = 'insight-sum-api';
   }
   if (typeof options.routePrefix !== 'undefined') {
     this.routePrefix = options.routePrefix;
@@ -18,7 +18,7 @@ var InsightUI = function(options) {
   }
 };
 
-InsightUI.dependencies = ['insight-lite-api'];
+InsightUI.dependencies = ['insight-sum-api'];
 
 inherits(InsightUI, BaseService);
 
