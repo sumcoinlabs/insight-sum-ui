@@ -15,7 +15,7 @@ npm install -g litecore-node
 litecore-node create mynode
 cd mynode
 litecore-node install insight-lite-api
-litecore-node install insight-lite-ui
+litecore-node install insight-sum-ui
 litecore-node start
 ```
 
@@ -74,7 +74,7 @@ For more details about the [Insight API](https://github.com/litecoin-project/ins
 
 ## Contribute
 
-Contributions and suggestions are welcomed at the [Insight UI GitHub repository](https://github.com/litecoin-project/insight-lite-ui).
+Contributions and suggestions are welcomed at the [Insight UI GitHub repository](https://github.com/litecoin-project/insight-sum-ui).
 
 
 ## License
