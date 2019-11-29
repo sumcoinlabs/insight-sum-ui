@@ -1,10 +1,10 @@
 # Insight UI
 
-A Sumcoin blockchain explorer web application service for [Litecore Node](https://github.com/sumcoinlabs/sumcore-node) using the [Insight API](https://github.com/sumcoinlabs/insight-sum-api).
+A Sumcoin blockchain explorer web application service for [Sumcore Node](https://github.com/sumcoinlabs/sumcore-node) using the [Insight API](https://github.com/sumcoinlabs/insight-sum-api).
 
 ## Quick Start
 
-Please see the guide at [https://bitcore.io/guides/full-node](https://bitcore.io/guides/full-node) for information about getting a block explorer running. This is only the front-end component of the block explorer, and is packaged together with all of the necessary components in [Litecore](https://github.com/sumcoinlabs/litecore).
+Please see the guide at [https://bitcore.io/guides/full-node](https://bitcore.io/guides/full-node) for information about getting a block explorer running. This is only the front-end component of the block explorer, and is packaged together with all of the necessary components in [Sumcore](https://github.com/sumcoinlabs/sumcore).
 
 ## Getting Started
 
