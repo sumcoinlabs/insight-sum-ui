@@ -1,6 +1,6 @@
 {
   "name": "insight-sum-ui",
-  "description": "An open-source frontend for the Insight API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the litecoin network and build your own services with it.",
+  "description": "An open-source frontend for the Insight API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the sumcoin network and build your own services with it.",
   "version": "0.4.6",
   "repository": "git://github.com/sumcoinlabs/insight-sum-ui.git",
   "contributors": [
@@ -34,7 +34,7 @@
     "insight",
     "blockchain",
     "blockexplorer",
-    "litecoin",
+    "sumcoin",
     "litecore",
     "front-end"
   ],
