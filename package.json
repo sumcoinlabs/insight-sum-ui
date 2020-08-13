@@ -26,7 +26,7 @@
     "sumcore",
     "front-end"
   ],
-  "bitcoreNode": "bitcore-node-sumcoin",
+  "bitcoreNode": "sumcore-node",
   "dependencies": {},
   "devDependencies": {
     "bower": "~1.2.8",
