@@ -15,7 +15,7 @@ npm install -g sumcore-node
 sumcore-node create mynode
 cd mynode
 sumcore-node install insight-sum-api
-sumcore-node install insight-ui-sumcoin
+sumcore-node install insight-sum-ui
 sumcore-node start
 ```
 
@@ -74,7 +74,7 @@ For more details about the [Insight API](https://github.com/sumcoinlabs/insight-
 
 ## Contribute
 
-Contributions and suggestions are welcomed at the [Insight UI GitHub repository](https://github.com/sumcoinlabs/insight-ui-sumcoin).
+Contributions and suggestions are welcomed at the [Insight UI GitHub repository](https://github.com/sumcoinlabs/insight-sum-ui).
 
 
 ## License
