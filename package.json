@@ -1,7 +1,7 @@
 {
   "name": "insight-sum-ui",
-  "description": "An open-source frontend for the Insight API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the sumcoin network and build your own services with it.",
-  "version": "0.4.7",
+  "description": "An open-source frontend for the Insight API. The Insight API provides you with a convenient, powerful and simple way to query and broadcast data on the Sumcoin network and build your own services with it.",
+  "version": "0.4.8",
   "repository": {
     "type": "git",
     "url": "git://github.com/sumcoinlabs/insight-sum-ui.git"
@@ -23,6 +23,7 @@
     "blockchain",
     "blockexplorer",
     "sumcoin",
+    "sum",
     "sumcore",
     "front-end"
   ],
