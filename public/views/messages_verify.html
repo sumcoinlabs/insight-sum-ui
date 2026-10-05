@@ -1,81 +1,412 @@
-<section data-ng-controller="VerifyMessageController">
+<section data-ng-controller="VerifyMessageController"
+         class="verify-message-page">
+
   <div class="page-header">
-    <h1>
-      <span translate>Verify signed message</span>
+
+    <h1 translate>
+      Verify Signed Message
     </h1>
+
+    <p class="lead">
+      Cryptographically verify that a message was signed by the private
+      key controlling a specific Sumcoin address.
+    </p>
+
   </div>
+
+
   <div class="row">
-    <div class="col-xs-12 col-md-8">
-      <form class="form-horizontal" role="form">
-        <div class="form-group">
-          <label for="verify-message-address" class="col-sm-2 control-label" translate>
-            Address
-          </label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="verify-message-address"
-                data-ng-model="message.address">
-          </div>
+
+    <div class="col-xs-12 col-md-7">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong translate>Verify a signature</strong>
         </div>
-        <div class="form-group">
-          <label for="verify-message-signature" class="col-sm-2 control-label" translate>
-            Signature
-          </label>
-          <div class="col-sm-10">
-            <input type="text" class="form-control" id="verify-message-signature"
-                data-ng-model="message.signature">
+
+        <div class="panel-body">
+
+          <form class="form-horizontal"
+                role="form">
+
+            <div class="form-group">
+
+              <label for="verify-message-address"
+                     class="col-sm-2 control-label">
+                Address
+              </label>
+
+              <div class="col-sm-10">
+
+                <input type="text"
+                       class="form-control"
+                       id="verify-message-address"
+                       data-ng-model="message.address"
+                       placeholder="Sumcoin address">
+
+                <span class="help-block">
+                  The Sumcoin address that allegedly signed the message.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="verify-message-signature"
+                     class="col-sm-2 control-label" translate>
+                Signature
+              </label>
+
+              <div class="col-sm-10">
+
+                <input type="text"
+                       class="form-control"
+                       id="verify-message-signature"
+                       data-ng-model="message.signature"
+                       placeholder="Cryptographic signature">
+
+                <span class="help-block">
+                  Paste the signature produced by the signer's wallet.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="verify-message-message"
+                     class="col-sm-2 control-label" translate>
+                Message
+              </label>
+
+              <div class="col-sm-10">
+
+                <textarea class="form-control"
+                          id="verify-message-message"
+                          data-ng-model="message.message"
+                          rows="6"
+                          placeholder="Paste the exact original message"></textarea>
+
+                <span class="help-block">
+                  The message must match exactly, including punctuation
+                  and whitespace.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <div class="col-sm-offset-2 col-sm-10">
+
+                <button class="btn btn-primary"
+                        data-ng-click="verify()"
+                        data-ng-disabled="!verifiable()" translate>
+                  Verify Signature
+                </button>
+
+              </div>
+
+            </div>
+
+          </form>
+
+
+          <div class="row">
+
+            <div data-ng-hide="verification.status == 'unverified'"
+                 class="col-sm-offset-2 col-sm-10">
+
+              <div data-ng-show="verification.status == 'loading'">
+                Verifying signature...
+              </div>
+
+
+              <div data-ng-show="
+                     verification.status == 'verified' &&
+                     verification.result"
+                   class="alert alert-info">
+
+                <strong>Signature verified.</strong><br>
+
+                This exact message is cryptographically signed by the
+                key corresponding to:
+
+                <br>
+
+                <code>{{verification.address}}</code>
+
+              </div>
+
+
+              <div data-ng-show="
+                     verification.status == 'verified' &&
+                     !verification.result"
+                   class="alert alert-danger">
+
+                <strong>Verification failed.</strong><br>
+
+                The signature does not match this address and exact
+                message.
+
+              </div>
+
+
+              <div data-ng-show="verification.status == 'error'"
+                   class="alert alert-warning">
+
+                <strong>Verification error.</strong>
+
+                <br>
+
+                {{verification.error}}
+
+              </div>
+
+            </div>
+
           </div>
-        </div>
-        <div class="form-group">
-          <label for="verify-message-message" class="col-sm-2 control-label" translate>
-            Message
-          </label>
-          <div class="col-sm-10">
-            <textarea class="form-control" id="verify-message-message"
-              data-ng-model="message.message" rows="5"></textarea>
-          </div>
-        </div>
-        <div class="form-group">
-          <div class="col-sm-offset-2 col-sm-10">
-            <button class="btn btn-default" translate
-                data-ng-click="verify()" data-ng-disabled="!verifiable()">
-              Verify
-            </button>
-          </div>
-        </div>
-      </form>
-      <div class="row">
-        <div data-ng-hide="verification.status == 'unverified'"
-             class="col-sm-offset-2 col-sm-10">
-          <div ng-show="verification.status == 'loading'" translate>
-            Loading...
-          </div>
-          <div ng-show="verification.status == 'verified' && verification.result"
-               class="alert alert-success" translate>
-            The message is verifiably from {{verification.address}}.
-          </div>
-          <div ng-show="verification.status == 'verified' && !verification.result"
-               class="alert alert-danger" translate>
-            The message failed to verify.
-          </div>
-          <div ng-show="verification.status == 'error'"
-               class="alert alert-warning">
-            <p translate>An error occured in the verification process.</p>
-            <p ng-show="error">
-              <strong translate>Error message:</strong>
-              {{verification.error}}
-            </p>
-          </div>
+
         </div>
       </div>
+
     </div>
-    <div class="col-xs-12 col-md-4 col-gray">
-      <p translate>
-        Sumcoin comes with a way of signing arbitrary messages.
+
+
+    <div class="col-xs-12 col-md-5">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong translate>What does this prove?</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>
+            A Sumcoin wallet can use the private key belonging to an
+            address to create a cryptographic signature for any text.
+          </p>
+
+          <p>
+            If this page reports that the signature is valid, it proves:
+          </p>
+
+          <p class="docs-callout">
+            <strong>
+              Whoever created that signature controlled the private key
+              for the stated Sumcoin address when the signature was made.
+            </strong>
+          </p>
+
+          <p>
+            It does not reveal the private key.
+          </p>
+
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong translate>This is not a messaging service</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>
+            Verifying a signed message does not send a message to another
+            person and does not automatically put anything on the
+            blockchain.
+          </p>
+
+          <p>It does not:</p>
+
+          <ul>
+            <li>send a text or chat message</li>
+            <li>create a Sumcoin transaction</li>
+            <li>spend Sumcoin</li>
+            <li>charge a network fee</li>
+            <li>publish the message to the blockchain</li>
+            <li>reveal the signer's private key</li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="row">
+
+    <div class="col-md-6">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong translate>Example</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>A person might sign:</p>
+
+          <pre>I control this Sumcoin address.
+Verification requested by example.com.
+Date: 2026-09-27
+Nonce: 7F42A91C</pre>
+
+          <p>
+            Their wallet returns a cryptographic signature.
+            They can then give someone:
+          </p>
+
+          <pre>Address:
+SUMCOIN_ADDRESS
+
+Message:
+I control this Sumcoin address.
+Verification requested by example.com.
+Date: 2026-09-27
+Nonce: 7F42A91C
+
+Signature:
+BASE64_SIGNATURE</pre>
+
+          <p>
+            Anyone can use this page to verify those three values without
+            needing the private key.
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="col-md-6">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong translate>How do I create a signed message?</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>
+            Use a trusted Sumcoin wallet that controls the address.
+            The private key should remain in that wallet.
+          </p>
+
+          <p>
+            Sumcoin Core supports the
+            <code>signmessage</code> RPC.
+          </p>
+
+          <pre>sumcoin-cli signmessage \
+  "YOUR_SUMCOIN_ADDRESS" \
+  "Your exact message"</pre>
+
+          <p>
+            For an encrypted wallet, it may need to be unlocked before
+            signing.
+          </p>
+
+          <div class="alert alert-warning">
+            <strong>Never paste your private key into this explorer.</strong>
+            Only the address, message and resulting signature are needed
+            for verification.
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong translate>Can a signed message be put on the Sumcoin blockchain?</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        Yes, but that is a separate operation.
       </p>
-      <p translate>
-        This form can be used to verify that a message comes from
-        a specific Sumcoin address.
+
+      <p>
+        The signature created above is normally off-chain. Sumcoin Core
+        also supports data-carrier / OP_RETURN transaction outputs, which
+        applications can use to commit a small amount of arbitrary data
+        to a transaction.
       </p>
+
+      <p>
+        An application could therefore:
+      </p>
+
+      <ol>
+        <li>create a message,</li>
+        <li>sign it with a Sumcoin address,</li>
+        <li>verify the signature, and then</li>
+        <li>
+          store a short message, signature, or cryptographic hash in a
+          separate on-chain transaction.
+        </li>
+      </ol>
+
+      <p>
+        That can produce a permanent public record showing that a
+        particular data commitment existed in a confirmed Sumcoin block.
+      </p>
+
+      <div class="alert alert-warning">
+        <strong>On-chain data is public and effectively permanent.</strong>
+        Never put private keys, passwords, personal secrets or other
+        sensitive information into blockchain data.
+      </div>
+
     </div>
   </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong translate>What does verification not prove?</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        A valid signature proves control of the private key associated
+        with the address. By itself, it does not prove the signer's
+        real-world legal identity.
+      </p>
+
+      <p>
+        It also does not automatically prove when a message was signed.
+        For current-control proofs, include a date, purpose and unique
+        nonce in the text before signing.
+      </p>
+
+    </div>
+  </div>
+
 </section>

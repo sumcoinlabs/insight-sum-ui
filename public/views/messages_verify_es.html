@@ -1,0 +1,416 @@
+<section data-ng-controller="VerifyMessageController"
+         class="verify-message-page">
+
+  <div class="page-header">
+
+    <h1>Verificar mensaje firmado</h1>
+
+    <p class="lead">
+      Comprueba criptográficamente que un mensaje fue firmado por la
+      clave privada que controla una dirección Sumcoin específica.
+    </p>
+
+  </div>
+
+
+  <div class="row">
+
+    <div class="col-xs-12 col-md-7">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong>Verificar una firma</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <form class="form-horizontal"
+                role="form">
+
+            <div class="form-group">
+
+              <label for="verify-message-address"
+                     class="col-sm-2 control-label">
+                Dirección
+              </label>
+
+              <div class="col-sm-10">
+
+                <input type="text"
+                       class="form-control"
+                       id="verify-message-address"
+                       data-ng-model="message.address"
+                       placeholder="Dirección Sumcoin">
+
+                <span class="help-block">
+                  La dirección Sumcoin que supuestamente firmó el mensaje.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="verify-message-signature"
+                     class="col-sm-2 control-label">
+                Firma
+              </label>
+
+              <div class="col-sm-10">
+
+                <input type="text"
+                       class="form-control"
+                       id="verify-message-signature"
+                       data-ng-model="message.signature"
+                       placeholder="Firma criptográfica">
+
+                <span class="help-block">
+                  Pega la firma producida por el monedero del firmante.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <label for="verify-message-message"
+                     class="col-sm-2 control-label">
+                Mensaje
+              </label>
+
+              <div class="col-sm-10">
+
+                <textarea class="form-control"
+                          id="verify-message-message"
+                          data-ng-model="message.message"
+                          rows="6"
+                          placeholder="Pega el mensaje original exacto"></textarea>
+
+                <span class="help-block">
+                  El mensaje debe coincidir exactamente, incluyendo
+                  puntuación y espacios.
+                </span>
+
+              </div>
+
+            </div>
+
+
+            <div class="form-group">
+
+              <div class="col-sm-offset-2 col-sm-10">
+
+                <button class="btn btn-primary"
+                        data-ng-click="verify()"
+                        data-ng-disabled="!verifiable()">
+                  Verificar firma
+                </button>
+
+              </div>
+
+            </div>
+
+          </form>
+
+
+          <div class="row">
+
+            <div data-ng-hide="verification.status == 'unverified'"
+                 class="col-sm-offset-2 col-sm-10">
+
+              <div data-ng-show="verification.status == 'loading'">
+                Verificando la firma...
+              </div>
+
+
+              <div data-ng-show="
+                     verification.status == 'verified' &&
+                     verification.result"
+                   class="alert alert-info">
+
+                <strong>Firma verificada.</strong><br>
+
+                Este mensaje exacto está firmado criptográficamente por
+                la clave correspondiente a:
+
+                <br>
+
+                <code>{{verification.address}}</code>
+
+              </div>
+
+
+              <div data-ng-show="
+                     verification.status == 'verified' &&
+                     !verification.result"
+                   class="alert alert-danger">
+
+                <strong>La verificación falló.</strong><br>
+
+                La firma no coincide con esta dirección y este mensaje
+                exacto.
+
+              </div>
+
+
+              <div data-ng-show="verification.status == 'error'"
+                   class="alert alert-warning">
+
+                <strong>Error de verificación.</strong>
+
+                <br>
+
+                {{verification.error}}
+
+              </div>
+
+            </div>
+
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="col-xs-12 col-md-5">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong>¿Qué demuestra?</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>
+            Un monedero Sumcoin puede utilizar la clave privada de una
+            dirección para crear una firma criptográfica sobre cualquier
+            texto.
+          </p>
+
+          <p>
+            Si esta página indica que la firma es válida, demuestra que:
+          </p>
+
+          <p class="docs-callout">
+            <strong>
+              Quien creó la firma controlaba la clave privada de la
+              dirección Sumcoin indicada cuando se creó la firma.
+            </strong>
+          </p>
+
+          <p>
+            La clave privada nunca se revela.
+          </p>
+
+        </div>
+      </div>
+
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong>No es un servicio de mensajería</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>
+            Verificar un mensaje firmado no envía el mensaje a otra
+            persona y no publica automáticamente nada en la blockchain.
+          </p>
+
+          <p>No:</p>
+
+          <ul>
+            <li>envía un mensaje de texto o chat</li>
+            <li>crea una transacción Sumcoin</li>
+            <li>gasta Sumcoin</li>
+            <li>cobra una comisión de red</li>
+            <li>publica el mensaje en la blockchain</li>
+            <li>revela la clave privada</li>
+          </ul>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="row">
+
+    <div class="col-md-6">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong>Ejemplo</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>Una persona podría firmar:</p>
+
+          <pre>Controlo esta dirección Sumcoin.
+Verificación solicitada por example.com.
+Fecha: 2026-09-27
+Nonce: 7F42A91C</pre>
+
+          <p>
+            El monedero devuelve una firma criptográfica.
+            Después puede proporcionar:
+          </p>
+
+          <pre>Dirección:
+SUMCOIN_ADDRESS
+
+Mensaje:
+Controlo esta dirección Sumcoin.
+Verificación solicitada por example.com.
+Fecha: 2026-09-27
+Nonce: 7F42A91C
+
+Firma:
+BASE64_SIGNATURE</pre>
+
+          <p>
+            Cualquier persona puede utilizar esta página para comprobar
+            esos tres valores sin conocer la clave privada.
+          </p>
+
+        </div>
+      </div>
+
+    </div>
+
+
+    <div class="col-md-6">
+
+      <div class="panel panel-default">
+
+        <div class="panel-heading">
+          <strong>¿Cómo creo un mensaje firmado?</strong>
+        </div>
+
+        <div class="panel-body">
+
+          <p>
+            Utiliza un monedero Sumcoin de confianza que controle la
+            dirección. La clave privada debe permanecer dentro del
+            monedero.
+          </p>
+
+          <p>
+            Sumcoin Core admite el comando RPC
+            <code>signmessage</code>.
+          </p>
+
+          <pre>sumcoin-cli signmessage \
+  "YOUR_SUMCOIN_ADDRESS" \
+  "Tu mensaje exacto"</pre>
+
+          <p>
+            Si el monedero está cifrado, puede ser necesario desbloquearlo
+            temporalmente antes de firmar.
+          </p>
+
+          <div class="alert alert-warning">
+            <strong>
+              Nunca pegues tu clave privada en este explorador.
+            </strong>
+            Para verificar sólo se necesitan la dirección, el mensaje y
+            la firma resultante.
+          </div>
+
+        </div>
+      </div>
+
+    </div>
+
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>
+        ¿Se puede guardar un mensaje firmado en la blockchain de Sumcoin?
+      </strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        Sí, pero es una operación independiente.
+      </p>
+
+      <p>
+        Una firma de mensaje normal permanece fuera de la blockchain.
+        Sumcoin Core también admite salidas de datos OP_RETURN, que una
+        aplicación puede utilizar para incluir una pequeña cantidad de
+        datos en una transacción.
+      </p>
+
+      <p>Una aplicación podría:</p>
+
+      <ol>
+        <li>crear un mensaje,</li>
+        <li>firmarlo con una dirección Sumcoin,</li>
+        <li>verificar la firma, y después</li>
+        <li>
+          almacenar un mensaje corto, la firma o un hash criptográfico
+          en una transacción independiente.
+        </li>
+      </ol>
+
+      <p>
+        Una vez confirmada, la blockchain proporciona un registro público
+        permanente de que ese compromiso de datos existía.
+      </p>
+
+      <div class="alert alert-warning">
+        <strong>
+          Los datos en una blockchain son públicos y prácticamente
+          permanentes.
+        </strong>
+        Nunca almacenes claves privadas, contraseñas, secretos personales
+        ni información confidencial.
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>¿Qué no demuestra la verificación?</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        Una firma válida demuestra control de la clave privada asociada a
+        la dirección. Por sí sola no demuestra la identidad legal de la
+        persona.
+      </p>
+
+      <p>
+        Tampoco demuestra automáticamente cuándo se firmó el mensaje.
+        Para demostrar control actual, incluye una fecha, el propósito de
+        la firma y un nonce único antes de firmar.
+      </p>
+
+    </div>
+  </div>
+
+</section>

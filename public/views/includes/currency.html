@@ -1,17 +1,51 @@
-<a class="dropdown-toggle" data-toggle="dropdown" href="#">
-  {{currency.symbol}} <span class="caret"></span>
+<a class="dropdown-toggle currency-toggle"
+   data-toggle="dropdown"
+   href="#">
+  {{currency.getLabel()}}
+  <span class="currency-selected-code">
+  {{$root.currency.symbol || 'USD'}}
+</span>
+<span class="caret"></span>
 </a>
-<ul class="dropdown-menu">
+
+<ul class="dropdown-menu currency-menu">
+
+  <li class="dropdown-header" translate>Sumcoin units</li>
+
   <li>
-  <a data-ng-click="setCurrency('USD')" data-ng-class="{active: currency.symbol == 'USD'}">USD</a>
+    <a data-ng-click="setCurrency('SUM')"
+       data-ng-class="{active: $root.currency.symbol == 'SUM'}">
+      <strong>SUM</strong>
+      <span class="currency-name" translate>Sumcoin</span>
+    </a>
   </li>
+
   <li>
-  <a data-ng-click="setCurrency('SUM')" data-ng-class="{active: currency.symbol == 'SUM'}">SUM</a>
+    <a data-ng-click="setCurrency('mSUM')"
+       data-ng-class="{active: $root.currency.symbol == 'mSUM'}">
+      <strong>mSUM</strong>
+      <span class="currency-name" translate>Milli Sumcoin</span>
+    </a>
   </li>
+
   <li>
-  <a data-ng-click="setCurrency('mSUM')" data-ng-class="{active: currency.symbol == 'mSUM'}">mSUM</a>
+    <a data-ng-click="setCurrency('sigmas')"
+       data-ng-class="{active: $root.currency.symbol == 'sigmas'}">
+      <strong>sigmas</strong>
+      <span class="currency-name" translate>Smallest unit</span>
+    </a>
   </li>
-  <li>
-  <a data-ng-click="setCurrency('sigmas')" data-ng-class="{active: currency.symbol == 'sigmas'}">sigmas</a>
+
+  <li class="divider"></li>
+  <li class="dropdown-header" translate>Fiat currencies</li>
+
+  <li data-ng-repeat="rate in currency.rates">
+    <a data-ng-click="setCurrency(rate.code)"
+       data-ng-class="{active: $root.currency.symbol == rate.code}"
+       title="1 SUM = {{rate.price}}">
+      <strong>{{rate.symbol}} {{rate.code}}</strong>
+      <span class="currency-name">{{rate.name}}</span>
+    </a>
   </li>
+
 </ul>

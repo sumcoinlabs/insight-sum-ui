@@ -316,7 +316,7 @@ margin-left: 0;
   border-radius: 2px;
 }
 .btn-primary {
-  background-color: #8DC429;
+  background-color: #276BCF;
   border: 2px solid #76AF0F;
 }
 
@@ -363,7 +363,7 @@ margin-left: 0;
 }
 
 .txvalues-primary {
-  background-color: #8DC429;
+  background-color: #276BCF;
 }
 
 .txvalues-default {
@@ -386,7 +386,7 @@ margin-left: 0;
   font-size: 14px;
   font-weight: normal;
 }
-.progress-bar-info { background-color: #8DC429; }
+.progress-bar-info { background-color: #276BCF; }
 
 /* Set the fixed height of the footer here */
 #footer {
@@ -826,7 +826,7 @@ a.v_highlight_more {
   }
   .txvalues-primary {
     background: none;
-    color: #8DC429;
+    color: #276BCF;
   }
   .txvalues-default {
     background: none;
@@ -849,3 +849,217 @@ a.v_highlight_more {
     width: 350px;
   }
 }
+
+
+
+
+
+/* SUMCOIN EXPLORER FIXES START */
+
+.navbar-default {
+  background-color: #2f73d2;
+}
+
+.navbar-default .navbar-nav > li > a {
+  color: #fff;
+}
+
+.navbar-default .navbar-nav > .active > a,
+.navbar-default .navbar-nav > .active > a:focus {
+  background-color: rgba(0,0,0,.12);
+  color: #fff;
+}
+
+.navbar-default .navbar-nav > li > a:hover,
+.navbar-default .navbar-nav > .active > a:hover {
+  background-color: rgba(255,255,255,.12);
+  color: #fff;
+}
+
+.navbar-form .form-control {
+  background-color: rgba(0,0,0,.08);
+  border: 1px solid rgba(255,255,255,.28);
+  color: #fff;
+  box-shadow: none;
+}
+
+.navbar-form .form-control:focus {
+  border-color: rgba(255,255,255,.65);
+  box-shadow: 0 0 0 1px rgba(255,255,255,.18);
+}
+
+.status {
+  background-color: rgba(10,54,118,.38);
+  border: 1px solid rgba(255,255,255,.16);
+  color: #fff;
+  white-space: nowrap;
+}
+
+.progress-bar-info {
+  background-color: #2f73d2;
+}
+
+.btn-primary {
+  background-color: #2f73d2;
+  border-color: #275fae;
+}
+
+.btn-primary:hover,
+.btn-primary:focus,
+.btn-primary:active {
+  background-color: #275fae;
+  border-color: #214f91;
+  color: #fff;
+}
+
+.currency-menu {
+  max-height: 430px;
+  min-width: 270px;
+  overflow-x: hidden;
+  overflow-y: auto;
+}
+
+.currency-menu > li > a {
+  cursor: pointer;
+  white-space: nowrap;
+}
+
+.currency-menu .currency-name {
+  color: #888;
+  font-size: 11px;
+  margin-left: 8px;
+}
+
+.currency-menu > li > a.active {
+  font-weight: bold;
+  background-color: #f1f5fa;
+}
+
+.explorer-about {
+  line-height: 1.45;
+}
+
+.source-links {
+  line-height: 1.8;
+}
+
+.scanner-camera video {
+  width: 100%;
+  max-width: 520px;
+  border-radius: 4px;
+  background: #111;
+}
+
+.scanner-note {
+  margin: 10px auto 20px;
+  max-width: 520px;
+  padding: 12px 15px;
+  background: #f5f7fa;
+  border: 1px solid #ddd;
+  border-radius: 4px;
+  color: #555;
+}
+
+.scanner-file-button {
+  margin: 10px 0;
+}
+
+@media (min-width: 992px) {
+  .navbar > .container {
+    width: 96%;
+    max-width: none;
+  }
+
+  .insight.navbar-brand {
+    font-size: 30px;
+    padding-right: 12px;
+    white-space: nowrap;
+  }
+
+  .navbar-default .navbar-nav > li > a {
+    padding-left: 12px;
+    padding-right: 12px;
+  }
+
+  .navbar-form .form-control {
+    width: 250px;
+  }
+
+  .status {
+    margin-right: 6px;
+    padding-left: 8px;
+    padding-right: 8px;
+  }
+}
+
+@media (min-width: 1200px) {
+  .navbar-form .form-control {
+    width: 300px;
+  }
+}
+
+@media (max-width: 991px) and (min-width: 768px) {
+  .insight.navbar-brand {
+    font-size: 25px;
+  }
+
+  .navbar-default .navbar-nav > li > a {
+    padding-left: 10px;
+    padding-right: 10px;
+  }
+}
+
+@media (max-width: 767px) {
+  .navbar-default .navbar-collapse {
+    background-color: #2f73d2;
+    border: 0;
+    box-shadow: none;
+    max-height: calc(100vh - 50px);
+    overflow-y: auto;
+  }
+
+  .navbar-default .navbar-nav > li > a {
+    color: #fff;
+  }
+
+  .navbar-default .navbar-nav .open .dropdown-menu {
+    background: #fff;
+    border-radius: 3px;
+    margin: 0 10px 10px;
+    max-height: 300px;
+    overflow-y: auto;
+  }
+
+  .navbar-default .navbar-nav .open .dropdown-menu > li > a {
+    color: #333;
+  }
+
+  .currency-menu .dropdown-header {
+    color: #777;
+  }
+
+  #search-form-mobile {
+    padding: 0 15px;
+  }
+
+  #search-form-mobile .form-control {
+    color: #333;
+    background: #fff;
+    border: 1px solid #ddd;
+  }
+
+  .explorer-about {
+    margin-top: 25px;
+  }
+
+  .scanner-note {
+    margin-left: 5px;
+    margin-right: 5px;
+  }
+
+  .modal-dialog {
+    margin: 10px;
+  }
+}
+
+/* SUMCOIN EXPLORER FIXES END */

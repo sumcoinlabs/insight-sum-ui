@@ -23,6 +23,7 @@ function($scope, $rootScope, $routeParams, $location, Global, Transaction, Trans
 
       var notAddr = false;
       // non standard input
+console.log("item", items[i]);
       if (items[i].scriptSig && !items[i].addr) {
         items[i].addr = 'Unparsed address [' + u++ + ']';
         items[i].notAddr = true;
@@ -87,7 +88,15 @@ function($scope, $rootScope, $routeParams, $location, Global, Transaction, Trans
 
     data.txs.forEach(function(tx) {
       _processTX(tx);
+
       $scope.txs.push(tx);
+
+      /*
+       * If an unconfirmed payment already exists when this
+       * address page is loaded/reloaded, expose it to the same
+       * payment tracker.
+       */
+
     });
   };
 
@@ -117,6 +126,17 @@ function($scope, $rootScope, $routeParams, $location, Global, Transaction, Trans
       $rootScope.flashMessage = null;
       $scope.tx = tx;
       _processTX(tx);
+
+      /*
+       * The transaction has now been successfully obtained from
+       * Insight. Give this exact object to AddressController.
+       *
+       * This is the SAME tx object used to draw the transaction
+       * card, so payment tracking no longer performs a second
+       * competing lookup.
+       */
+
+
       $scope.txs.unshift(tx);
     }, function(e) {
       if (e.status === 400) {
@@ -129,7 +149,11 @@ function($scope, $rootScope, $routeParams, $location, Global, Transaction, Trans
         $rootScope.flashMessage = 'Transaction Not Found';
       }
 
-      $location.path('/');
+      $location.path(
+        /^\/es(?:\/|$)/.test($location.path()) ?
+          '/es/' :
+          '/'
+      );
     });
   };
 
@@ -170,6 +194,55 @@ function($scope, $rootScope, $routeParams, $location, Global, Transaction, Trans
 
   $scope.$on('tx', function(event, txid) {
     _findTx(txid);
+  });
+
+  /*
+   * Confirmations 2-6 for an actively tracked payment.
+   *
+   * Change ONLY the confirmation count already displayed by
+   * the existing transaction card. No transaction-array rebuild,
+   * no route reload and no layout changes.
+   */
+  $scope.$on('confirmation:update', function(event, data) {
+
+    if (
+      !data ||
+      !data.txid
+    ) {
+      return;
+    }
+
+    angular.forEach(
+      $scope.txs || [],
+      function(tx) {
+
+        if (
+          tx &&
+          tx.txid === data.txid
+        ) {
+
+          tx.confirmations =
+            Number(
+              data.confirmations || 0
+            );
+        }
+      }
+    );
+
+    /*
+     * Also covers the standalone tx controller state if present.
+     */
+    if (
+      $scope.tx &&
+      $scope.tx.txid === data.txid
+    ) {
+
+      $scope.tx.confirmations =
+        Number(
+          data.confirmations || 0
+        );
+    }
+
   });
 
 });

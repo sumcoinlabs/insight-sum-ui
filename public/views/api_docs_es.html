@@ -1,0 +1,865 @@
+<section class="api-docs">
+
+  <div class="page-header">
+    <h1>
+      API de Sumcoin Explorer
+      <small>REST + WebSocket</small>
+    </h1>
+
+    <p class="lead">
+      Crea monederos, paneles, servicios de pago, herramientas de
+      monitorización y aplicaciones blockchain utilizando la API pública
+      de Sumcoin Explorer.
+    </p>
+  </div>
+
+
+  <div class="panel panel-default docs-hero">
+    <div class="panel-body">
+
+      <div class="row">
+
+        <div class="col-sm-4">
+          <h4>URL base</h4>
+          <code>https://sumcoin.space/api</code>
+        </div>
+
+        <div class="col-sm-4">
+          <h4>Formato de respuesta</h4>
+          <strong>JSON</strong>
+        </div>
+
+        <div class="col-sm-4">
+          <h4>Autenticación</h4>
+          <strong>No se necesita una clave API</strong>
+        </div>
+
+      </div>
+
+      <hr>
+
+      <p>
+        La API REST permite consultar bloques, transacciones, saldos de
+        direcciones, salidas no gastadas, estado de sincronización,
+        tipos de cambio y otros datos en vivo de la red Sumcoin.
+      </p>
+
+      <p>
+        Socket.IO también está disponible para aplicaciones que necesiten
+        recibir notificaciones en tiempo real cuando llegan nuevos bloques
+        o transacciones.
+      </p>
+
+      <div class="alert alert-info">
+        <strong>API pública:</strong>
+        las solicitudes pueden estar sujetas a límites de frecuencia.
+        Las aplicaciones deberían almacenar en caché las respuestas cuando
+        sea razonable y evitar consultas innecesariamente frecuentes.
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Inicio rápido</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <h3>1. Abre un endpoint en el navegador</h3>
+
+      <p>
+        Los endpoints GET pueden abrirse directamente en un navegador.
+      </p>
+
+      <p>
+        <a class="btn btn-primary btn-sm"
+           target="_blank"
+           href="/api/status?q=getInfo">
+          Probar información del nodo
+        </a>
+
+        <a class="btn btn-default btn-sm"
+           target="_blank"
+           href="/api/blocks?limit=5">
+          Probar últimos bloques
+        </a>
+
+        <a class="btn btn-default btn-sm"
+           target="_blank"
+           href="/api/sync">
+          Probar estado de sincronización
+        </a>
+      </p>
+
+
+      <h3>2. cURL</h3>
+
+      <pre>curl 'https://sumcoin.space/api/status?q=getInfo'</pre>
+
+
+      <h3>3. JavaScript</h3>
+
+      <pre>fetch('https://sumcoin.space/api/status?q=getInfo')
+  .then(function(response) {
+    return response.json();
+  })
+  .then(function(data) {
+    console.log(data);
+  });</pre>
+
+
+      <h3>4. Python</h3>
+
+      <pre>import requests
+
+data = requests.get(
+    'https://sumcoin.space/api/status?q=getInfo'
+).json()
+
+print(data)</pre>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Bloques</strong>
+    </div>
+
+    <div class="panel-body">
+
+
+      <div class="docs-endpoint">
+
+        <h3>Obtener el hash desde una altura</h3>
+
+        <p>
+          Convierte una altura numérica de bloque en el hash
+          correspondiente.
+        </p>
+
+        <pre>GET /api/block-index/&lt;height&gt;</pre>
+
+        <h4>Ejemplo</h4>
+
+        <pre>curl 'https://sumcoin.space/api/block-index/0'</pre>
+
+        <h4>Respuesta</h4>
+
+        <pre>{
+  "blockHash": "..."
+}</pre>
+
+        <p>
+          <a target="_blank"
+             href="/api/block-index/0">
+            Probar altura 0
+          </a>
+        </p>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Detalles de un bloque</h3>
+
+        <pre>GET /api/block/&lt;blockHash&gt;</pre>
+
+        <p>
+          Devuelve información decodificada del bloque, incluyendo altura,
+          hash, fecha y hora, transacciones y otros metadatos.
+        </p>
+
+        <pre>curl 'https://sumcoin.space/api/block/BLOCK_HASH'</pre>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Bloque sin procesar</h3>
+
+        <pre>GET /api/rawblock/&lt;blockHash&gt;</pre>
+
+        <p>
+          Devuelve los datos serializados del bloque en hexadecimal.
+          Está pensado para aplicaciones que necesitan la representación
+          original codificada del bloque.
+        </p>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Resumen de bloques</h3>
+
+        <pre>GET /api/blocks?limit=10</pre>
+
+        <p>
+          Devuelve una colección de los bloques recientes.
+        </p>
+
+        <h4>Por fecha</h4>
+
+        <pre>GET /api/blocks?limit=10&amp;blockDate=2026-09-27</pre>
+
+        <p>
+          <a target="_blank"
+             href="/api/blocks?limit=5">
+            Probar últimos 5 bloques
+          </a>
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Transacciones</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <div class="docs-endpoint">
+
+        <h3>Detalles de una transacción</h3>
+
+        <pre>GET /api/tx/&lt;txid&gt;</pre>
+
+        <p>
+          Devuelve la transacción decodificada, incluyendo entradas,
+          salidas, confirmaciones, bloque y valores.
+        </p>
+
+        <pre>curl 'https://sumcoin.space/api/tx/YOUR_TXID'</pre>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Transacción sin procesar</h3>
+
+        <pre>GET /api/rawtx/&lt;txid&gt;</pre>
+
+        <h4>Respuesta</h4>
+
+        <pre>{
+  "rawtx": "01000000..."
+}</pre>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Transacciones de un bloque</h3>
+
+        <pre>GET /api/txs?block=&lt;blockHash&gt;&amp;pageNum=0</pre>
+
+        <p>
+          Devuelve las transacciones asociadas con el bloque especificado.
+          Los resultados están paginados.
+        </p>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Transacciones de una dirección</h3>
+
+        <pre>GET /api/txs?address=&lt;address&gt;&amp;pageNum=0</pre>
+
+        <p>
+          Devuelve las transacciones relacionadas con una dirección
+          Sumcoin.
+        </p>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Transmitir una transacción firmada</h3>
+
+        <pre>POST /api/tx/send</pre>
+
+        <p>
+          Envía a la red Sumcoin una transacción sin procesar que ya fue
+          creada y firmada.
+        </p>
+
+        <p>
+          Este endpoint <strong>no</strong> crea la transacción,
+          selecciona entradas, calcula cambio ni firma nada.
+        </p>
+
+        <h4>cURL</h4>
+
+        <pre>curl -X POST \
+  'https://sumcoin.space/api/tx/send' \
+  --data-urlencode 'rawtx=SIGNED_TRANSACTION_HEX'</pre>
+
+        <h4>Respuesta correcta</h4>
+
+        <pre>{
+  "txid": "TRANSACTION_ID"
+}</pre>
+
+        <p>
+          <a href="/es/tx/send">
+            Abrir la herramienta para transmitir transacciones
+          </a>
+        </p>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Direcciones</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <div class="docs-endpoint">
+
+        <h3>Resumen de una dirección</h3>
+
+        <pre>GET /api/addr/&lt;address&gt;</pre>
+
+        <p>
+          Devuelve saldos, número de transacciones e historial relacionado
+          con una dirección.
+        </p>
+
+        <h4>Sin lista de transacciones</h4>
+
+        <pre>GET /api/addr/&lt;address&gt;?noTxList=1</pre>
+
+        <h4>Historial paginado</h4>
+
+        <pre>GET /api/addr/&lt;address&gt;?from=0&amp;to=20</pre>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Valores individuales de una dirección</h3>
+
+        <table class="table table-striped api-table">
+          <tbody>
+
+            <tr>
+              <td>Saldo</td>
+              <td><code>GET /api/addr/&lt;address&gt;/balance</code></td>
+            </tr>
+
+            <tr>
+              <td>Total recibido</td>
+              <td><code>GET /api/addr/&lt;address&gt;/totalReceived</code></td>
+            </tr>
+
+            <tr>
+              <td>Total enviado</td>
+              <td><code>GET /api/addr/&lt;address&gt;/totalSent</code></td>
+            </tr>
+
+            <tr>
+              <td>Saldo sin confirmar</td>
+              <td><code>GET /api/addr/&lt;address&gt;/unconfirmedBalance</code></td>
+            </tr>
+
+          </tbody>
+        </table>
+
+        <div class="alert alert-info">
+          Los endpoints de saldo individual pueden devolver el valor
+          entero de la unidad mínima utilizado internamente por la API.
+        </div>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Salidas no gastadas (UTXO)</h3>
+
+        <pre>GET /api/addr/&lt;address&gt;/utxo</pre>
+
+        <p>
+          Devuelve las salidas actualmente no gastadas pertenecientes a
+          la dirección. Los monederos pueden utilizarlas al construir
+          nuevas transacciones.
+        </p>
+
+        <h4>Respuesta típica</h4>
+
+        <pre>[
+  {
+    "address": "...",
+    "txid": "...",
+    "vout": 0,
+    "scriptPubKey": "...",
+    "amount": 1.250000,
+    "satoshis": 1250000,
+    "confirmations": 42
+  }
+]</pre>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>UTXO para varias direcciones</h3>
+
+        <h4>GET</h4>
+
+        <pre>GET /api/addrs/ADDRESS1,ADDRESS2/utxo</pre>
+
+        <h4>POST</h4>
+
+        <pre>POST /api/addrs/utxo
+
+addrs=ADDRESS1,ADDRESS2</pre>
+
+      </div>
+
+
+      <div class="docs-endpoint">
+
+        <h3>Transacciones para varias direcciones</h3>
+
+        <pre>GET /api/addrs/ADDRESS1,ADDRESS2/txs?from=0&amp;to=20</pre>
+
+        <p>Controles opcionales:</p>
+
+        <table class="table table-condensed api-table">
+
+          <tbody>
+
+            <tr>
+              <td><code>from</code></td>
+              <td>Primer elemento del historial</td>
+            </tr>
+
+            <tr>
+              <td><code>to</code></td>
+              <td>Último elemento del rango</td>
+            </tr>
+
+            <tr>
+              <td><code>noAsm=1</code></td>
+              <td>Omite el ensamblado del script</td>
+            </tr>
+
+            <tr>
+              <td><code>noScriptSig=1</code></td>
+              <td>Omite los datos scriptSig de las entradas</td>
+            </tr>
+
+            <tr>
+              <td><code>noSpent=1</code></td>
+              <td>Omite información sobre salidas gastadas</td>
+            </tr>
+
+          </tbody>
+
+        </table>
+
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Estado de la red y del explorador</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <table class="table table-striped api-table">
+
+        <thead>
+          <tr>
+            <th>Función</th>
+            <th>Endpoint</th>
+          </tr>
+        </thead>
+
+        <tbody>
+
+          <tr>
+            <td>Información del nodo</td>
+            <td>
+              <code>GET /api/status?q=getInfo</code>
+              &nbsp;
+              <a target="_blank"
+                 href="/api/status?q=getInfo">Probar</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Dificultad de la red</td>
+            <td><code>GET /api/status?q=getDifficulty</code></td>
+          </tr>
+
+          <tr>
+            <td>Hash del mejor bloque</td>
+            <td><code>GET /api/status?q=getBestBlockHash</code></td>
+          </tr>
+
+          <tr>
+            <td>Hash del último bloque</td>
+            <td><code>GET /api/status?q=getLastBlockHash</code></td>
+          </tr>
+
+          <tr>
+            <td>Sincronización histórica</td>
+            <td>
+              <code>GET /api/sync</code>
+              &nbsp;
+              <a target="_blank"
+                 href="/api/sync">Probar</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Sincronización P2P</td>
+            <td>
+              <code>GET /api/peer</code>
+              &nbsp;
+              <a target="_blank"
+                 href="/api/peer">Probar</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Versión de la API</td>
+            <td>
+              <code>GET /api/version</code>
+              &nbsp;
+              <a target="_blank"
+                 href="/api/version">Probar</a>
+            </td>
+          </tr>
+
+          <tr>
+            <td>Estimación de comisión</td>
+            <td><code>GET /api/utils/estimatefee?nbBlocks=2</code></td>
+          </tr>
+
+          <tr>
+            <td>Tipos de cambio</td>
+            <td>
+              <code>GET /api/currency</code>
+              &nbsp;
+              <a target="_blank"
+                 href="/api/currency">Probar</a>
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Verificación criptográfica de mensajes</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        Las direcciones Sumcoin pueden utilizarse para firmar
+        criptográficamente texto arbitrario. Una firma válida demuestra
+        que quien firmó controlaba la clave privada correspondiente a la
+        dirección indicada.
+      </p>
+
+      <pre>GET  /api/messages/verify
+POST /api/messages/verify</pre>
+
+      <p>Valores necesarios:</p>
+
+      <ul>
+        <li><code>address</code> — dirección Sumcoin</li>
+        <li><code>signature</code> — firma criptográfica</li>
+        <li><code>message</code> — mensaje original exacto</li>
+      </ul>
+
+      <h4>Ejemplo cURL</h4>
+
+      <pre>curl -X POST \
+  'https://sumcoin.space/api/messages/verify' \
+  --data-urlencode 'address=SUMCOIN_ADDRESS' \
+  --data-urlencode 'signature=BASE64_SIGNATURE' \
+  --data-urlencode 'message=Controlo esta dirección Sumcoin.'</pre>
+
+      <h4>Respuesta</h4>
+
+      <pre>{
+  "result": true
+}</pre>
+
+      <p>
+        <a href="/es/messages/verify">
+          Abrir la herramienta de verificación de mensajes
+        </a>
+      </p>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Mensajes firmados y datos en la blockchain</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        Un mensaje firmado normal permanece
+        <strong>fuera de la blockchain</strong>.
+        Firmarlo no crea una transacción ni almacena el mensaje
+        permanentemente.
+      </p>
+
+      <p>
+        Sumcoin Core también admite salidas de datos OP_RETURN.
+        Una aplicación puede utilizar una transacción independiente para
+        registrar una pequeña cantidad de datos, una firma o un hash
+        criptográfico.
+      </p>
+
+      <div class="alert alert-info">
+        <strong>Son dos operaciones diferentes:</strong><br>
+        la firma de mensajes demuestra control de una clave privada;
+        una transacción en la blockchain proporciona un registro público
+        confirmado y permanente.
+      </div>
+
+      <div class="alert alert-warning">
+        Los datos almacenados en una blockchain son públicos y
+        prácticamente permanentes. Nunca almacenes claves privadas,
+        contraseñas ni información confidencial.
+      </div>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>API WebSocket en vivo</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <p>
+        Socket.IO proporciona notificaciones blockchain en tiempo real
+        sin que una aplicación tenga que consultar constantemente la
+        API REST.
+      </p>
+
+      <h3>Eventos disponibles</h3>
+
+      <table class="table table-striped api-table">
+
+        <tbody>
+
+          <tr>
+            <td><code>tx</code></td>
+            <td>
+              Nueva transacción. Suscríbete a la sala
+              <code>inv</code>.
+            </td>
+          </tr>
+
+          <tr>
+            <td><code>block</code></td>
+            <td>
+              Nuevo bloque. Suscríbete a la sala
+              <code>inv</code>.
+            </td>
+          </tr>
+
+          <tr>
+            <td><code>&lt;address&gt;</code></td>
+            <td>
+              Actividad de una dirección concreta.
+              Suscríbete a esa dirección como sala.
+            </td>
+          </tr>
+
+          <tr>
+            <td><code>status</code></td>
+            <td>
+              Progreso de sincronización.
+              Suscríbete a la sala <code>sync</code>.
+            </td>
+          </tr>
+
+        </tbody>
+
+      </table>
+
+
+      <h3>Escuchar nuevos bloques y transacciones</h3>
+
+      <pre>&lt;script src="https://sumcoin.space/socket.io/socket.io.js"&gt;&lt;/script&gt;
+
+&lt;script&gt;
+var socket = io('https://sumcoin.space');
+
+socket.on('connect', function() {
+
+  socket.emit('subscribe', 'inv');
+
+  socket.on('block', function(block) {
+    console.log('Nuevo bloque:', block);
+  });
+
+  socket.on('tx', function(tx) {
+    console.log('Nueva transacción:', tx);
+  });
+
+});
+&lt;/script&gt;</pre>
+
+
+      <h3>Vigilar una dirección Sumcoin</h3>
+
+      <pre>var address = 'YOUR_SUMCOIN_ADDRESS';
+var socket = io('https://sumcoin.space');
+
+socket.on('connect', function() {
+
+  socket.emit('subscribe', address);
+
+  socket.on(address, function(tx) {
+    console.log('Actividad de la dirección:', tx);
+  });
+
+});</pre>
+
+
+      <h3>Vigilar la sincronización</h3>
+
+      <pre>var socket = io('https://sumcoin.space');
+
+socket.on('connect', function() {
+
+  socket.emit('subscribe', 'sync');
+
+  socket.on('status', function(status) {
+    console.log(status);
+  });
+
+});</pre>
+
+    </div>
+  </div>
+
+
+  <div class="panel panel-default">
+
+    <div class="panel-heading">
+      <strong>Respuestas, errores y notas de integración</strong>
+    </div>
+
+    <div class="panel-body">
+
+      <h3>CORS</h3>
+
+      <p>
+        La API pública permite solicitudes desde aplicaciones web
+        alojadas en otros dominios mediante encabezados de acceso
+        entre orígenes.
+      </p>
+
+
+      <h3>Respuesta 404</h3>
+
+      <pre>{
+  "status": 404,
+  "url": "/api/example",
+  "error": "Not found"
+}</pre>
+
+
+      <h3>Límites de solicitudes</h3>
+
+      <p>
+        La API incluye soporte para limitar la frecuencia de solicitudes.
+        Las aplicaciones de producción deberían poder manejar limitación
+        temporal, fallos de red y respuestas distintas de HTTP 200.
+      </p>
+
+
+      <h3>Valores y confirmaciones</h3>
+
+      <p>
+        Dependiendo del endpoint, los valores pueden aparecer como
+        cantidades decimales de SUM o como enteros en la unidad mínima.
+        Utiliza siempre el campo documentado por cada endpoint.
+      </p>
+
+
+      <h3>Código fuente</h3>
+
+      <p>
+        <a target="_blank"
+           href="https://github.com/sumcoinlabs/insight-sum-api">
+          API Sumcoin Insight
+        </a>
+
+        &nbsp;&middot;&nbsp;
+
+        <a target="_blank"
+           href="https://github.com/sumcoinlabs/insight-sum-ui">
+          Interfaz Sumcoin Explorer
+        </a>
+
+        &nbsp;&middot;&nbsp;
+
+        <a target="_blank"
+           href="https://github.com/sumcoinlabs/sumcoin">
+          Sumcoin Core
+        </a>
+      </p>
+
+    </div>
+  </div>
+
+</section>

@@ -1,149 +1,233 @@
 'use strict';
 
 angular.module('insight.system').controller('ScannerController',
-  function($scope, $rootScope, $modalInstance, Global) {
+  function($scope, $rootScope, $modalInstance, Global, $timeout) {
+
     $scope.global = Global;
-
-    // Detect mobile devices
-    var isMobile = {
-      Android: function() {
-          return navigator.userAgent.match(/Android/i);
-      },
-      BlackBerry: function() {
-          return navigator.userAgent.match(/BlackBerry/i);
-      },
-      iOS: function() {
-          return navigator.userAgent.match(/iPhone|iPad|iPod/i);
-      },
-      Opera: function() {
-          return navigator.userAgent.match(/Opera Mini/i);
-      },
-      Windows: function() {
-          return navigator.userAgent.match(/IEMobile/i);
-      },
-      any: function() {
-          return (isMobile.Android() || isMobile.BlackBerry() || isMobile.iOS() || isMobile.Opera() || isMobile.Windows());
-      }
-    };
-
-    navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia || navigator.mozGetUserMedia || navigator.msGetUserMedia;
-    window.URL = window.URL || window.webkitURL || window.mozURL || window.msURL;
-
-    $scope.isMobile = isMobile.any();
     $scope.scannerLoading = false;
+    $scope.scannerError = '';
 
-    var $searchInput = angular.element(document.getElementById('search')),
-        cameraInput,
-        video,
-        canvas,
-        $video,
-        context,
-        localMediaStream;
+    $scope.cameraAvailable = !!(
+      window.isSecureContext &&
+      navigator.mediaDevices &&
+      navigator.mediaDevices.getUserMedia
+    );
 
-    var _scan = function(evt) {
-      if ($scope.isMobile) {
+    var video;
+    var canvas;
+    var context;
+    var fileInput;
+    var stream = null;
+    var scanTimer = null;
+    var stopped = false;
+
+    function visibleSearchInput() {
+      var inputs = document.querySelectorAll('#search');
+
+      for (var i = 0; i < inputs.length; i++) {
+        if (inputs[i].offsetParent !== null) return inputs[i];
+      }
+
+      return inputs.length ? inputs[0] : null;
+    }
+
+    function submitResult(data) {
+      if (!data) return;
+
+      var value = String(data).trim()
+        .replace(/^sumcoin:/i, '')
+        .split('?')[0];
+
+      stopScanner();
+
+      var input = visibleSearchInput();
+
+      if (!input) {
+        window.location.href =
+          /^\/es(?:\/|$)/.test(window.location.pathname) ?
+            '/es/' :
+            '/';
+        return;
+      }
+
+      var form = input.form;
+
+      angular.element(input)
+        .val(value)
+        .triggerHandler('input')
+        .triggerHandler('change');
+
+      if (form) {
+        angular.element(form).triggerHandler('submit');
+      }
+    }
+
+    function decodeCanvas() {
+      try {
+        qrcode.width = canvas.width;
+        qrcode.height = canvas.height;
+        qrcode.imagedata = context.getImageData(
+          0, 0, canvas.width, canvas.height
+        );
+        qrcode.decode();
+      } catch (e) {
+        return false;
+      }
+
+      return true;
+    }
+
+    function scanVideo() {
+      if (stopped || !stream || !video) return;
+
+      if (video.readyState >= 2) {
+        canvas.width = 640;
+        canvas.height = 480;
+        context.drawImage(video, 0, 0, canvas.width, canvas.height);
+        decodeCanvas();
+      }
+
+      scanTimer = $timeout(scanVideo, 500);
+    }
+
+    function scanFile(evt) {
+      var files = evt.target.files;
+      if (!files || !files.length) return;
+
+      var file = files[0];
+
+      if (file.type.indexOf('image/') !== 0) {
+        $scope.$applyAsync(function() {
+          $scope.scannerError = 'Please choose an image containing a QR code.';
+        });
+        return;
+      }
+
+      $scope.$applyAsync(function() {
         $scope.scannerLoading = true;
-        var files = evt.target.files;
+        $scope.scannerError = '';
+      });
 
-        if (files.length === 1 && files[0].type.indexOf('image/') === 0) {
-          var file = files[0];
+      var reader = new FileReader();
 
-          var reader = new FileReader();
-          reader.onload = (function(theFile) {
-            return function(e) {
-              var mpImg = new MegaPixImage(file);
-              mpImg.render(canvas, { maxWidth: 200, maxHeight: 200, orientation: 6 });
+      reader.onload = function(e) {
+        var image = new Image();
 
-              setTimeout(function() {
-                qrcode.width = canvas.width;
-                qrcode.height = canvas.height;
-                qrcode.imagedata = context.getImageData(0, 0, qrcode.width, qrcode.height);
+        image.onload = function() {
+          var max = 900;
+          var scale = Math.min(
+            max / image.width,
+            max / image.height,
+            1
+          );
 
-                try {
-                  //alert(JSON.stringify(qrcode.process(context)));
-                  qrcode.decode();
-                } catch (e) {
-                  alert(e);
-                }
-              }, 1500);
-            };
-          })(file);
+          canvas.width = Math.max(1, Math.round(image.width * scale));
+          canvas.height = Math.max(1, Math.round(image.height * scale));
 
-          // Read  in the file as a data URL
-          reader.readAsDataURL(file);
-        }
-      } else {
-        if (localMediaStream) {
-          context.drawImage(video, 0, 0, 300, 225);
+          context.drawImage(
+            image, 0, 0,
+            canvas.width, canvas.height
+          );
 
           try {
-            qrcode.decode();
-          } catch(e) {
-            //qrcodeError(e);
+            if (!decodeCanvas()) throw new Error('decode failed');
+          } catch (err) {
+            $scope.$applyAsync(function() {
+              $scope.scannerLoading = false;
+              $scope.scannerError =
+                'No QR code could be read from that image.';
+            });
           }
-        }
+        };
 
-        setTimeout(_scan, 500);
+        image.src = e.target.result;
+      };
+
+      reader.readAsDataURL(file);
+    }
+
+    function startCamera() {
+      if (!$scope.cameraAvailable) return;
+
+      navigator.mediaDevices.getUserMedia({
+        video: {facingMode: {ideal: 'environment'}},
+        audio: false
+      }).then(function(s) {
+        stream = s;
+        video.srcObject = stream;
+        return video.play();
+      }).then(function() {
+        scanVideo();
+      }).catch(function(err) {
+        $scope.$applyAsync(function() {
+          $scope.cameraAvailable = false;
+          $scope.scannerError =
+            'Camera access was unavailable. You can still choose a QR image below.';
+        });
+      });
+    }
+
+    function stopScanner() {
+      if (stopped) return;
+      stopped = true;
+
+      if (scanTimer) {
+        $timeout.cancel(scanTimer);
+        scanTimer = null;
       }
-    };
 
-    var _successCallback = function(stream) {
-      video.src = (window.URL && window.URL.createObjectURL(stream)) || stream;
-      localMediaStream = stream;
-      video.play();
-      setTimeout(_scan, 1000);
-    };
+      if (stream) {
+        stream.getTracks().forEach(function(track) {
+          track.stop();
+        });
+        stream = null;
+      }
 
-    var _scanStop = function() {
+      if (fileInput) {
+        fileInput.removeEventListener('change', scanFile, false);
+      }
+
       $scope.scannerLoading = false;
       $modalInstance.close();
-      if (!$scope.isMobile) {
-        if (localMediaStream.stop) localMediaStream.stop();
-        localMediaStream = null;
-        video.src = '';
-      }
-    };
-
-    var _videoError = function(err) {
-      console.log('Video Error: ' + JSON.stringify(err));
-      _scanStop();
-    };
+    }
 
     qrcode.callback = function(data) {
-      _scanStop();
-
-      var str = (data.indexOf('sumcoin:') === 0) ? data.substring(9) : data; 
-      console.log('QR code detected: ' + str);
-      $searchInput
-        .val(str)
-        .triggerHandler('change')
-        .triggerHandler('submit');
+      $scope.$applyAsync(function() {
+        submitResult(data);
+      });
     };
 
-    $scope.cancel = function() {
-      _scanStop();
-    };
+    $scope.cancel = stopScanner;
 
     $modalInstance.opened.then(function() {
       $rootScope.isCollapsed = true;
-      
-      // Start the scanner
-      setTimeout(function() {
+
+      $timeout(function() {
         canvas = document.getElementById('qr-canvas');
+        video = document.getElementById('qrcode-scanner-video');
+        fileInput = document.getElementById('qrcode-camera');
+
+        if (!canvas) return;
+
         context = canvas.getContext('2d');
 
-        if ($scope.isMobile) {
-          cameraInput = document.getElementById('qrcode-camera');
-          cameraInput.addEventListener('change', _scan, false);
-        } else {
-          video = document.getElementById('qrcode-scanner-video');
-          $video = angular.element(video);
-          canvas.width = 300;
-          canvas.height = 225;
-          context.clearRect(0, 0, 300, 225);
-
-          navigator.getUserMedia({video: true}, _successCallback, _videoError); 
+        if (fileInput) {
+          fileInput.addEventListener('change', scanFile, false);
         }
-      }, 500);
+
+        startCamera();
+      }, 250);
     });
-});
+
+    $scope.$on('$destroy', function() {
+      if (!stopped) {
+        if (scanTimer) $timeout.cancel(scanTimer);
+
+        if (stream) {
+          stream.getTracks().forEach(function(track) {
+            track.stop();
+          });
+        }
+      }
+    });
+  });
