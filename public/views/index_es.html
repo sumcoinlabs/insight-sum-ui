@@ -18,26 +18,26 @@
 
 <!-- SUMCOIN SEARCH INTRO START -->
 
-<h1>Sumcoin Price Today & Blockchain Explorer</h1>
+<h1>Precio de Sumcoin Hoy & Explorador Blockchain</h1>
 
 
   <p class="text-muted"
      style="margin:0 0 22px;font-size:15px;line-height:1.5;">
 
-    Live Sumcoin (SUM) price:
+    Precio de Sumcoin (SUM):
     <strong data-ng-if="$root.currency.rateMap.USD">
       ${{$root.currency.rateMap.USD.n | number:2}} USD
     </strong>.
 
-    Explore live blocks, transactions, addresses,
-    confirmations, network status and API data.
+    Consulta bloques, transacciones, direcciones,
+    confirmaciones, estado de red y API en tiempo real.
 
   </p>
 
 
 <!-- SUMCOIN SEARCH INTRO END -->
 
-<h2 translate>Latest Blocks</h2>
+<h2 translate>Últimos Bloques</h2>
 
 
         <table class="table table-hover table-striped"
@@ -63,7 +63,7 @@
 
             <tr class="fader" data-ng-repeat="b in blocks">
               <td>
-                <a data-ng-href="{{languagePrefix}}/block/{{b.hash}}">
+                <a href="/es/block/{{b.hash}}">
                   {{b.height | number:0}}
                 </a>
               </td>
@@ -93,7 +93,7 @@
         </table>
 
         <div class="btn-more">
-          <a data-ng-href="{{languagePrefix}}/blocks"
+          <a href="/es/blocks"
              class="btn btn-default"
              translate>See all blocks</a>
         </div>
@@ -119,7 +119,7 @@
             <tr class="fader" data-ng-repeat="tx in txs">
               <td>
                 <a class="ellipsis"
-                   data-ng-href="{{languagePrefix}}/tx/{{tx.txid}}">
+                   href="/es/tx/{{tx.txid}}">
                   {{tx.txid}}
                 </a>
               </td>
@@ -136,39 +136,38 @@
       </div>
 
       <div class="col-xs-12 col-md-4 col-gray explorer-about">
-        <h2>About</h2>
+        <h2>Acerca de</h2>
 
         <p>
-          <strong>Sumcoin Explorer</strong> is an open-source blockchain
-          explorer for the Sumcoin network, providing detailed block,
-          transaction and address information together with REST and
-          WebSocket APIs.
+          <strong>Sumcoin Explorer</strong> es un explorador
+          de blockchain de código abierto para la red Sumcoin.
+          Permite consultar bloques, transacciones, direcciones,
+          saldos y el estado de la red en tiempo real.
         </p>
 
         <p>
-          The explorer is powered by Sumcoin Core and the Sumcoin Insight
-          API. Developers can use the API to build wallets, services and
-          applications that need indexed blockchain data beyond standard
-          Sumcoin Core RPC calls.
-        </p>
-
-        <p class="source-links">
+          El explorador funciona con
           <a href="https://github.com/sumcoinlabs/sumcoin"
              target="_blank">Sumcoin Core</a>
-          &middot;
+          y
           <a href="https://github.com/sumcoinlabs/insight-sum-api"
-             target="_blank">Insight API</a>
-          &middot;
-          <a href="https://github.com/sumcoinlabs/insight-sum-ui"
-             target="_blank">Explorer UI</a>
-          &middot;
+             target="_blank">Sumcoin Insight API</a>.
+          Los desarrolladores pueden utilizar las APIs REST y WebSocket
+          para crear monederos, servicios y aplicaciones que necesiten
+          datos indexados de la blockchain.
+        </p>
+
+        <p>
+          Consulta la
+          <a href="/es/api-docs">documentación de la API</a>
+          o
           <a href="https://github.com/sumcoinlabs/insight-sum-ui/issues"
-             target="_blank">Report an issue</a>
+             target="_blank">informa de un problema</a>.
         </p>
 
         <div id="powered" class="row">
           <div class="powered-text">
-            <small class="text-muted">Powered by</small>
+            <small class="text-muted">Desarrollado con</small>
           </div>
 
           <a href="https://bitcore.io/"

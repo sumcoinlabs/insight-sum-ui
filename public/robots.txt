@@ -1,4 +1,5 @@
 User-agent: *
-Disallow: /address
-Disallow: /api
-Disallow: /transaction
+Allow: /
+Disallow: /socket.io/
+
+Sitemap: https://sumcoin.space/sitemap.xml

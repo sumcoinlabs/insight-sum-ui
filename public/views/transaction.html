@@ -52,9 +52,31 @@
           <td><strong translate>Size</strong></td>
           <td class="text-muted text-right">{{tx.size}} (bytes)</td>
         </tr>
-        <tr data-ng-show="tx.fees">
+        <tr data-ng-show="!tx.isCoinStake && tx.fees > 0">
           <td><strong translate>Fee Rate</strong></td>
           <td class="text-muted text-right">{{$root.currency.getConvertion((tx.fees * 1000) / tx.size) + ' per kB' || ((tx.fees * 1000) / tx.size) + 'SUM per kB'}}</td>
+        </tr>
+
+        <tr data-sumcoin-stake-reward="summary"
+            data-ng-show="tx.isCoinStake">
+
+          <td>
+            <strong translate>Stake Reward</strong>
+          </td>
+
+          <td class="text-muted text-right">
+
+            <strong>
+              {{$root.currency.getConvertion(tx.stakeReward)
+                || tx.stakeReward + ' SUM'}}
+            </strong>
+
+            <span data-ng-show="$root.currency.symbol != 'SUM'">
+              ({{tx.stakeReward | number:6}} SUM)
+            </span>
+
+          </td>
+
         </tr>
         <tr>
           <td><strong translate>Received Time</strong></td>
@@ -70,7 +92,7 @@
           <td><strong translate>Included in Block</strong></td>
           <td data-ng-show="tx.blockhash" class="text-muted text-right"> 
             <div class="ellipsis">
-              <a href="block/{{tx.blockhash}}">{{tx.blockhash}}</a>
+              <a data-ng-href="{{languagePrefix}}/block/{{tx.blockhash}}">{{tx.blockhash}}</a>
             </div>
           <td data-ng-show="!tx.blockhash" class="text-muted text-right">Unconfirmed</td>
         </tr>

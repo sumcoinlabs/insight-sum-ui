@@ -2,6 +2,13 @@
 
 angular.module('insight.blocks').controller('BlocksController',
   function($scope, $rootScope, $routeParams, $location, Global, Block, Blocks, BlockByHeight) {
+
+  var _languagePrefix = function() {
+    return /^\/es(?:\/|$)/.test($location.path()) ?
+      '/es' :
+      '';
+  };
+
   $scope.global = Global;
   $scope.loading = false;
 
@@ -9,10 +16,10 @@ angular.module('insight.blocks').controller('BlocksController',
     BlockByHeight.get({
       blockHeight: $routeParams.blockHeight
     }, function(hash) {
-      $location.path('/block/' + hash.blockHash);
+      $location.path(_languagePrefix() + '/block/' + hash.blockHash);
     }, function() {
       $rootScope.flashMessage = 'Bad Request';
-      $location.path('/');
+      $location.path(_languagePrefix() + '/');
     });
   }
 
@@ -27,7 +34,7 @@ angular.module('insight.blocks').controller('BlocksController',
 
   $scope.$watch('dt', function(newValue, oldValue) {
     if (newValue !== oldValue) {
-      $location.path('/blocks-date/' + _formatTimestamp(newValue));
+      $location.path(_languagePrefix() + '/blocks-date/' + _formatTimestamp(newValue));
     }
   });
 
@@ -91,7 +98,7 @@ angular.module('insight.blocks').controller('BlocksController',
       else {
         $rootScope.flashMessage = 'Block Not Found';
       }
-      $location.path('/');
+      $location.path(_languagePrefix() + '/');
     });
   };
 

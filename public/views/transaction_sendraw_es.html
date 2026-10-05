@@ -3,11 +3,10 @@
 
   <div class="page-header">
 
-    <h1 translate>Broadcast Raw Transaction</h1>
+    <h1>Transmitir transacción sin procesar</h1>
 
     <p class="lead">
-      Relay an already-created and already-signed Sumcoin transaction
-      to the network.
+      Envía a la red una transacción Sumcoin que ya fue creada y firmada.
     </p>
 
   </div>
@@ -20,7 +19,7 @@
       <div class="panel panel-default">
 
         <div class="panel-heading">
-          <strong translate>Signed transaction hex</strong>
+          <strong>Hexadecimal de la transacción firmada</strong>
         </div>
 
         <div class="panel-body">
@@ -36,8 +35,8 @@
                  }">
 
               <label for="transaction-rawdata"
-                     class="col-sm-2 control-label" translate>
-                Raw transaction
+                     class="col-sm-2 control-label">
+                Transacción
               </label>
 
               <div class="col-sm-10">
@@ -49,12 +48,12 @@
                           data-ng-pattern="/^[0-9A-Fa-f]+$/"
                           rows="12"
                           required
-                          placeholder="Paste signed hexadecimal transaction"></textarea>
+                          placeholder="Pega la transacción hexadecimal firmada"></textarea>
 
                 <span class="help-block"
                       data-ng-show="txForm.rawData.$error.pattern">
-                  Raw transaction data must contain hexadecimal
-                  characters only.
+                  La transacción debe contener únicamente caracteres
+                  hexadecimales.
                 </span>
 
               </div>
@@ -68,8 +67,8 @@
 
                 <button class="btn btn-primary"
                         data-ng-click="send()"
-                        data-ng-disabled="!txForm.$valid" translate>
-                  Broadcast Transaction
+                        data-ng-disabled="!txForm.$valid">
+                  Transmitir transacción
                 </button>
 
               </div>
@@ -85,17 +84,17 @@
                  class="col-sm-offset-2 col-sm-10">
 
               <div data-ng-show="status == 'loading'">
-                Broadcasting...
+                Transmitiendo...
               </div>
 
               <div data-ng-show="status == 'sent'"
                    class="alert alert-info">
 
-                <strong>Transaction broadcast.</strong>
+                <strong>Transacción transmitida.</strong>
 
                 <br>
 
-                Transaction ID:
+                ID de transacción:
                 <code>{{txid}}</code>
 
               </div>
@@ -103,7 +102,7 @@
               <div data-ng-show="status == 'error'"
                    class="alert alert-warning">
 
-                <strong>Broadcast failed.</strong>
+                <strong>La transmisión falló.</strong>
 
                 <br>
 
@@ -126,32 +125,30 @@
       <div class="panel panel-default">
 
         <div class="panel-heading">
-          <strong translate>What does this tool do?</strong>
+          <strong>¿Qué hace esta herramienta?</strong>
         </div>
 
         <div class="panel-body">
 
           <p>
-            A raw transaction is the serialized hexadecimal representation
-            of a Sumcoin transaction.
+            Una transacción sin procesar es la representación hexadecimal
+            serializada de una transacción Sumcoin.
           </p>
 
           <p>
-            This tool takes an already-signed transaction and submits it
-            to the connected Sumcoin node for relay to the P2P network.
+            Esta herramienta toma una transacción ya firmada y la envía al
+            nodo Sumcoin conectado para que se propague por la red P2P.
           </p>
 
-          <p>
-            It does <strong>not</strong>:
-          </p>
+          <p>No:</p>
 
           <ul>
-            <li>create transaction inputs or outputs</li>
-            <li>calculate change</li>
-            <li>choose a fee</li>
-            <li>hold your wallet</li>
-            <li>sign a transaction</li>
-            <li>need your private keys</li>
+            <li>crea entradas o salidas</li>
+            <li>calcula el cambio</li>
+            <li>elige la comisión</li>
+            <li>custodia tu monedero</li>
+            <li>firma una transacción</li>
+            <li>necesita tus claves privadas</li>
           </ul>
 
         </div>
@@ -161,24 +158,24 @@
       <div class="panel panel-default">
 
         <div class="panel-heading">
-          <strong translate>Before broadcasting</strong>
+          <strong>Antes de transmitir</strong>
         </div>
 
         <div class="panel-body">
 
           <p>
-            Confirm the transaction was created and signed by software
-            you trust.
+            Comprueba que la transacción fue creada y firmada por software
+            de confianza.
           </p>
 
           <p>
-            Check its destination, amount, fee and change outputs before
-            submitting it.
+            Verifica destino, cantidad, comisión y salidas de cambio antes
+            de enviarla.
           </p>
 
           <div class="alert alert-warning">
-            Once a valid transaction is accepted and confirmed by the
-            network, it generally cannot be reversed.
+            Una vez que una transacción válida es aceptada y confirmada
+            por la red, normalmente no puede revertirse.
           </div>
 
         </div>
@@ -192,7 +189,7 @@
   <div class="panel panel-default">
 
     <div class="panel-heading">
-      <strong translate>API equivalent</strong>
+      <strong>Equivalente mediante API</strong>
     </div>
 
     <div class="panel-body">
@@ -203,7 +200,7 @@
   'https://sumcoin.space/api/tx/send' \
   --data-urlencode 'rawtx=SIGNED_TRANSACTION_HEX'</pre>
 
-      <h4>Successful response</h4>
+      <h4>Respuesta correcta</h4>
 
       <pre>{
   "txid": "TRANSACTION_ID"
