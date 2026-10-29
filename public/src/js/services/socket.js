@@ -64,11 +64,6 @@ angular.module('insight.socket').factory('getSocket',
       scope.$on('$destroy', function() {
         scopedSocket.removeAllListeners();
       });
-      socket.on('connect', function() {
-        scopedSocket.removeAllListeners({
-          skipConnect: true
-        });
-      });
       return scopedSocket;
     };
   });

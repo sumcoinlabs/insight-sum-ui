@@ -79,10 +79,10 @@ angular.module('insight.system').controller('IndexController',
     var socket = getSocket($scope);
 
     function startSocket() {
+      socket.emit('subscribe', 'inv');
+
       if (socketStarted) return;
       socketStarted = true;
-
-      socket.emit('subscribe', 'inv');
 
       socket.on('tx', function(tx) {
         addTx(tx, true);

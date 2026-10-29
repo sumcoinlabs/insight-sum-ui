@@ -52,10 +52,10 @@ angular.module('insight.status').controller('StatusController',
     var socket = getSocket($scope);
 
     function startSocket() {
+      socket.emit('subscribe', 'sync');
+
       if (socketStarted) return;
       socketStarted = true;
-
-      socket.emit('subscribe', 'sync');
 
       socket.on('status', function(sync) {
         $scope.sync = sync;
