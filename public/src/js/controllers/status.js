@@ -40,7 +40,7 @@ angular.module('insight.status').controller('StatusController',
       if (q === 'Info' && !infoTimer) {
         infoTimer = $interval(function() {
           fetchStatus('Info');
-        }, 5000);
+        }, 15000);
       }
     };
 
@@ -69,7 +69,7 @@ angular.module('insight.status').controller('StatusController',
       startSocket();
 
       if (!syncTimer) {
-        syncTimer = $interval(fetchSync, 2000);
+        syncTimer = $interval(fetchSync, 15000);
       }
     };
 
