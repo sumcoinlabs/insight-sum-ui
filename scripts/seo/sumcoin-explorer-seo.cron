@@ -1,0 +1,1 @@
+*/5 * * * * root /root/explorer/sumcoin-explorer/scripts/refresh-seo.sh >> /var/log/sumcoin-seo.log 2>&1

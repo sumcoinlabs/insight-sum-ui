@@ -1,0 +1,119 @@
+<!doctype html>
+<html lang="en" data-ng-app="insight" data-ng-csp>
+<head>
+
+
+  <base href="/" />
+	<meta charset="UTF-8">
+	<meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
+	<meta name="viewport" content="width=device-width,initial-scale=1.0">
+
+	<meta name="fragment" content="!">
+
+
+	<link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Ubuntu:300,400,500,700,400italic">
+	<link rel="stylesheet" href="css/main.min.css?v=seo10">
+
+
+</head>
+<body ng-cloak class="ng-cloak">
+  <div>
+    <script type="text/ng-template" id="scannerModal.html">
+      <div class="modal-header">
+        <h3 class="modal-title">
+          <span class="glyphicon glyphicon-qrcode"></span>
+          Scan Sumcoin QR Code
+        </h3>
+      </div>
+
+      <div class="modal-body text-center">
+
+        <canvas id="qr-canvas"
+                style="display:none"></canvas>
+
+        <div data-ng-show="cameraAvailable"
+             class="scanner-camera">
+          <video id="qrcode-scanner-video"
+                 autoplay
+                 muted
+                 playsinline></video>
+
+          <p class="text-muted">
+            Point your camera at a Sumcoin QR code.
+          </p>
+        </div>
+
+        <div data-ng-show="!cameraAvailable"
+             class="scanner-note">
+          <span class="glyphicon glyphicon-info-sign"></span>
+          Live camera scanning requires HTTPS in modern browsers.
+          You can still scan a saved QR image below.
+        </div>
+
+        <label class="btn btn-primary scanner-file-button">
+          <span class="glyphicon glyphicon-picture"></span>
+          Choose QR Image
+          <input id="qrcode-camera"
+                 type="file"
+                 accept="image/*"
+                 style="display:none">
+        </label>
+
+        <p class="text-muted m10v">
+          Works with Sumcoin address, transaction and block QR codes.
+        </p>
+
+        <div data-ng-show="scannerLoading"
+             class="m10v">
+          Reading QR code...
+          <span class="loader-gif"></span>
+        </div>
+
+        <div class="alert alert-danger"
+             data-ng-show="scannerError">
+          {{scannerError}}
+        </div>
+      </div>
+
+      <div class="modal-footer">
+        <button class="btn btn-default"
+                data-ng-click="cancel()">
+          Close
+        </button>
+      </div>
+    </script>
+  </div>
+	<div id="wrap">
+		<div class="navbar navbar-default navbar-fixed-top" data-ng-include="'views/includes/header.html'" role='navigation'></div>
+		<section class="container" data-ng-view></section>
+	</div>
+	<div id="footer" role="navigation">
+    <div class="container" data-ng-controller="FooterController">
+      <div class="links m20t pull-left">
+        <span class="languages" ng-show="availableLanguages.0">
+          [
+          <a href="#"
+            ng-click="setLanguage(l.isoCode)"
+            ng-class="{'selected': defaultLanguage == l.isoCode}"
+            ng-repeat="l in availableLanguages">
+            <span ng-show="!$first"> &middot; </span> {{l.name}}
+          </a>
+          ]
+        </span>
+        &nbsp;
+        [
+        <a data-ng-href="{{languagePrefix}}/messages/verify" translate>verify message</a>
+        <span> &middot; </span>
+        <a data-ng-href="{{languagePrefix}}/tx/send" translate>broadcast transaction</a>
+        ]
+      </div>
+      <a class="insight m10v pull-right" target="_blank" href="https://github.com/sumcoinlabs/insight-sum-api">Sumcoin Insight <small>API v{{version}}</small></a>
+    </div>
+  </div>
+  <script language="javascript">window.apiPrefix = '/api';</script>
+	<script src="/socket.io/socket.io.js"></script>
+	<script src="js/vendors.min.js"></script>
+	<script src="js/angularjs-all.min.js"></script>
+	<script src="js/main.min.js?v=4abe844"></script>
+</body>
+</html>
